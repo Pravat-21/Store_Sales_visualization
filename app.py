@@ -8,12 +8,13 @@ train_df=pd.read_csv('./dataset/Train.csv')
 cleaned_train=pd.read_csv('./dataset/cleanedTrain.csv')
 item_ind_df=pd.read_csv('./dataset/clean_train.csv')
 cleantrain=pd.read_csv('./dataset/cleantrain.csv')
+model_result=pd.read_csv('./dataset/model_result.csv')
 
 
 
-st.header('DATA VIDUALIZATION:')
+st.sidebar.header('DETAILS AND VISUALIZATION ABOUT STORE SALES :')
 st.sidebar.title('CONTENTS')
-res=st.sidebar.selectbox('CHOOSE TOPICS',['IMPUTATION','NUMERICAL-PLOTTING','CATEGORICAL-PLOTTING','model'])
+res=st.sidebar.selectbox('CHOOSE TOPICS',['IMPUTATION','NUMERICAL-PLOTTING','CATEGORICAL-PLOTTING','MODEL-COMPARISON'])
 
 
 if res=='IMPUTATION':
@@ -42,10 +43,11 @@ elif res=="CATEGORICAL-PLOTTING":
 
 
 else:
-    res_model=st.sidebar.selectbox('Choose any one',['performance','aug'])
+    res_dis=st.sidebar.selectbox('CHOOSE ONE',['R2-SCORE','MEAN-SQUARE-ERROR','ROOT-MEAN-SQUARE-ERROR','MEAN-ABSOLUTE-ERROR','SCORE-COMPARISON'])
 
 
 show_details=st.sidebar.button('SHOW DETAILS')
+st.sidebar.write('feel free to contact(email) : pravatpatra1997@gmail.com')
 
 #for imputation:
 if show_details:
@@ -195,7 +197,139 @@ if show_details:
             plt.tight_layout()
             st.pyplot(fig)
 
+#for model-comparison:
+if show_details:
+    if res=='MODEL-COMPARISON':
+        if res_dis=="R2-SCORE":
+
+            col1,col2=st.columns(2)
+            with col1:
+                st.markdown('**MODEL DATASET OF FINAL R2-SCORE :**')
+                temp_df=model_result[['Model_Name','r2_score']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**BAR PLOT OF FINAL R2-SCORE:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF PERFORMANCE THE MODELS',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['r2_score'])
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                
+                st.pyplot(fig)
+            
+            st.write('This is the r2 score (you can say accuracy also) with respect to  models.')
+            st.write("we can see here that the GredientBoost-Regressor gives us the highest performance ,that's 87.21%.")
         
+        if res_dis=="MEAN-SQUARE-ERROR":
+            col1,col2=st.columns(2)
+            with col1:
+                st.markdown('**MEAN-SQUARED-ERROR OF MODELS :**')
+                temp_df=model_result[['Model_Name','mean_sqr_err']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**VISUALIZATION OF MEAN-SQUARED-ERROR FOR EACH MODEL:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF MEAN-SQUARED-ERROR OF MODELS',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['mean_sqr_err'])
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                
+                st.pyplot(fig)
+            
+            st.markdown('**This is the overview of the mean-squared-error  with respect to each model.**')
+
+        if res_dis=="ROOT-MEAN-SQUARE-ERROR":
+            col1,col2=st.columns(2)
+            with col1:
+                st.markdown('**ROOT-MEAN-SQUARED-ERROR OF MODELS :**')
+                temp_df=model_result[['Model_Name','RMSE']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**VISUALIZATION OF ROOT-MEAN-SQUARED-ERROR FOR EACH MODEL:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF ROOT-MEAN-SQUARED-ERROR OF MODELS',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['RMSE'])
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                
+                st.pyplot(fig)
+            
+            st.markdown('**This is the overview of the root-mean-squared-error  with respect to each model.**')    
+
+        if res_dis=="MEAN-ABSOLUTE-ERROR":
+            col1,col2=st.columns(2)
+            with col1:
+                st.markdown('**MEAN-ABSOLUTE-ERROR OF MODELS :**')
+                temp_df=model_result[['Model_Name','mean_abs_error']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**VISUALIZATION OF MEAN-ABSOLUTE-ERROR FOR EACH MODEL:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF MEAN-ABSOLUTE-ERROR OF MODELS',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['mean_abs_error'])
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                
+                st.pyplot(fig)
+            
+            st.markdown('**This is the overview of the mean-absolute-error  with respect to each model.**') 
+
+        if res_dis=="SCORE-COMPARISON":
+            col1,col2=st.columns(2)
+            with col1:
+                st.markdown('**R2-SCORE BEFORE HYPERPARAMETER TUNING :**')
+                temp_df=model_result[['Model_Name','Before_param_r2_scr']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**R2-SCORE AFTER HYPERPARAMETER TUNING :**')
+                temp_df=model_result[['Model_Name','r2_score']]
+                st.dataframe(temp_df)
+
+            col3,col4=st.columns(2)
+            with col3:
+                st.markdown('**VISUALIZATION OF MODEL PERFORMANCE BEFORE HYPERPARAMETER TUNING:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF MODEL PERFORMANCE BEFORE HYPERPARAMETER TUNING :',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['Before_param_r2_scr'],color='red')
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                ax1.grid()
+                st.pyplot(fig)
+
+                
+
+            with col4:
+                st.markdown('**VISUALIZATION OF MODEL PERFORMANCE AFTER HYPERPARAMETER TUNING:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('BAR-PLOT OF MODEL PERFORMANCE AFTER HYPERPARAMETER TUNING:',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['r2_score'],color='black')
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                ax1.grid()
+                st.pyplot(fig)
+
+            st.markdown('### DIFFERENCE OF THE SCORE :')
+            col1,col2=st.columns(2)
+            with col1:
+                model_result['score_diff']=model_result['r2_score']-model_result['Before_param_r2_scr']
+                temp_df=model_result[['Model_Name','score_diff']]
+                st.dataframe(temp_df)
+
+            with col2:
+                st.markdown('**VISUALIZATION OF SCORE-DIFFERENCE:**')
+                fig,ax1=plt.subplots()
+                ax1.set_title('VISUALIZATION OF SCORE-DIFFERENCE:',fontweight='bold')
+                ax1.bar(model_result['Model_Name'],model_result['r2_score'],color='black',label='after')
+                ax1.bar(model_result['Model_Name'],model_result['Before_param_r2_scr'],width=0.5,color='blue',label='before')
+                ax1.set_xticklabels(model_result['Model_Name'],rotation=45, ha='right')
+                ax1.legend()
+                ax1.grid()
+                st.pyplot(fig)
+
+            st.write('Here we can see that GredientBoost-regressor perform the best with 87% accuracy. After tuning the hyper-parameter the r2-score got increased +3% for it .')
+                
+                
+            
+                  
 
 
 
